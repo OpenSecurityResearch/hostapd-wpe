@@ -34,8 +34,8 @@ Building
 
 	git clone https://github.com/OpenSecurityResearch/hostapd-wpe 
 
-	Here are the build steps for OpenSSL (on BT5R2):
-
+	BT5R2 Building - Here are the build steps for OpenSSL (on BT5R2):
+    ------------------------------------------------------------------------
 	Note: This will overwrite any previous OpenSSL instances and may
 	break things.. 
 
@@ -47,12 +47,24 @@ Building
 	make
 	make install
 
+
+    Kali 1.0.2 Building - 
+    -----------------------------------------------------------------------
+    Kali Linux comes with openssl 1.0.1e which satisfies our requirements
+    you just need to update some packages:
+
+    apt-get update
+    apt-get install libssl-dev libnl-dev
+
+    General - 
+    ------------------------------------------------------------------------
 	Now apply the hostapd-wpe.patch:
 
 	wget http://hostap.epitest.fi/releases/hostapd-1.0.tar.gz
 	tar -zxf hostapd-1.0.tar.gz
 	cd hostapd-1.0
 	patch -p1 < /root/hostapd-wpe/hostapd-wpe.patch 
+    cd hostapd
 	make
 	make install
 
