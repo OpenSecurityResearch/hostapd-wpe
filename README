@@ -18,13 +18,11 @@ where applicable.
 
 hostapd-wpe supports the following EAP types for impersonation:
     1. EAP-FAST/MSCHAPv2 (Phase 0)
-    2. PEAP/MSCHAPv2*
+    2. PEAP/MSCHAPv2
     3. EAP-TTLS/MSCHAPv2
     4. EAP-TTLS/MSCHAP
     5. EAP-TTLS/CHAP
     6. EAP-TTLS/PAP
-
-* Does not support Microsoft's "Computer Based Authentication"
 
 Once impersonation is underway, hostapd-wpe will return an
 EAP-Success message so that the client believes they are connected
@@ -107,9 +105,8 @@ Running:
 
     hostapd hostapd-wpe.conf
 
-    Look in the output for the username/challenge/response. I'll add
-    file logging soon. You can also use -K to get additional information
-    for other types! 
+    Look in the output for the username/challenge/response. It'll be there
+    and in a hostapd-wpe.log file in the directory you ran hostapd from
 
     for instance here are the EAP-FAST Phase 0 creds from stdout:
 
@@ -126,3 +123,53 @@ Running:
     password:          bradtest
 
     Alternatively MSCHAPv2 credentials are outputted in john the rippers NETNTLM format. 
+
+
+EAP-Success
+--------------
+    Certain EAP types do not require the server to authenticate itself, just to validate
+    the client's submitted credentials. Since we're playing the authentication server, 
+    that means we can easily just return an EAP-Success message to the client regardless
+    of what they send us. The client is happy because they've connected, but unfortunately
+    are unaware that they are connected to an unapproved authenticator. 
+
+    At this point, the attacker can set up a dhcp server and give the client an IP and
+    then do whatever they'd like (e.g. redirect dns, launch attacks, MiTM, etc..)
+
+    MSCHAPv2 protects against this by having the server prove knowledge of the password
+    most supplicants adhere to this policy, but we return EAP-Success just in case. 
+
+Karma-Style Probes
+------------------
+    This functionality simply waits for an client to send a directed probe, when it does, it 
+    assumes that SSID and responds to the client. Only applicable to 802.11 clients. 
+
+A note on MSCHAPv2
+-------------------
+    Microsoft offers something called "Computer Based Authentication". When a computer
+    joins a domain it is assigned a password. This password is stored on the system
+    and in active directory. We can harvest the MSCHAPv2 response from these systems but
+    its going to take a lifetime to crack. Unless you're just trying to solve for the 
+    hash, and not the actual password :)
+
+    One other thing to note, if the client returns all zeros, it isnt joined to a domain. 
+
+Testing Heartbleed
+---------------
+    If you're running Ubuntu and want to test Heartbleed you'll need to downgrade to a vulnerable
+    version of OpenSSL. That can be done by:
+
+wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/5436465/+files/openssl_1.0.1-4ubuntu5.11_i386.deb
+wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/5436465/+files/libssl-dev_1.0.1-4ubuntu5.11_i386.deb
+wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/5436465/+files/libssl-doc_1.0.1-4ubuntu5.11_all.deb
+wget https://launchpad.net/~ubuntu-security/+archive/ubuntu/ppa/+build/5436465/+files/libssl1.0.0_1.0.1-4ubuntu5.11_i386.deb
+sudo dpkg -i libssl1.0.0_1.0.1-4ubuntu5.11_i386.deb 
+sudo dpkg --install libssl1.0.0_1.0.1-4ubuntu5.11_i386.deb \
+libssl-dev_1.0.1-4ubuntu5.11_i386.deb \
+libssl-doc_1.0.1-4ubuntu5.11_all.deb \
+openssl_1.0.1-4ubuntu5.11_i386.deb 
+
+
+    The use wpa_supplicant to connect to hostapd-wpe -c 
+
+
