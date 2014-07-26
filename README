@@ -1,88 +1,113 @@
 hostapd-wpe (Wireless Pwnage Edition)
 by brad antoniewicz
 brad.antoniewicz@foundstone.com
+twitter: @brad_anton
 
 ------------------------------------------
 
-The current hostapd-wpe.patch is for: hostapd-1.1.tar.gz
+The current hostapd-wpe.patch is for: hostapd-2.2.tar.gz
 
-hostapd-wpe is an extension of FreeRADIUS-WPE 
-(http://www.willhackforsushi.com/?page_id=37) and JoMo-Kun's 
-HostAP karma patch (http://www.foofus.net/?page_id=115). 
+About
+----------
 
-Since FreeRADIUS does not support EAP-FAST in a non-development
-way, I decided to modify hostapd to facilitate AP impersonation 
-attacks with EAP-FAST Phase 0. It'll also work with all of 
-the Karma EAP-Types and more. 
+hostapd-wpe is the replacement for FreeRADIUS-WPE 
+(http://www.willhackforsushi.com/?page_id=37).
 
-Currently it supports:
-	EAP-FAST (Phase 0)
-	PEAP MSCHAPv2
+It implements IEEE 802.1x Authenticator and Authentication
+Server impersonation attacks to obtain client credentials,
+establish connectivity to the client, and launch other attacks
+where applicable. 
 
-TODO:
-	Logging to file, test more EAP-Types 
+hostapd-wpe supports the following EAP types for impersonation:
+    1. EAP-FAST/MSCHAPv2 (Phase 0)
+    2. PEAP/MSCHAPv2*
+    3. EAP-TTLS/MSCHAPv2
+    4. EAP-TTLS/MSCHAP
+    5. EAP-TTLS/CHAP
+    6. EAP-TTLS/PAP
+
+* Does not support Microsoft's "Computer Based Authentication"
+
+Once impersonation is underway, hostapd-wpe will return an
+EAP-Success message so that the client believes they are connected
+to their legitimate authenticator. 
+
+For 802.11 clients, hostapd-wpe also implements Karma-style gratuitous 
+probe responses. Inspiration for this was provided by JoMo-Kun's 
+patch for older versions of hostapd. 
+
+        http://www.foofus.net/?page_id=115
+
+hostapd-wpe also implements CVE-2014-0160 (Heartbleed) attacks against
+vulnerable clients. Inspiration for this was provided by the Cupid PoC:
+
+        https://github.com/lgrangeia/cupid
+
+hostapd-wpe logs all data to stdout and hostapd-wpe.log
+
+Quick Usage
+--------
+Once hostapd-wpe.patch is applied, hostapd-wpe.conf will be created
+at /path/to/build/hostapd/hostapd-wpe.conf. See that file for more 
+information. Note that /path/to/build/hostapd/hostapd-wpe.eap_users 
+will also be created, and hostapd-wpe is dependent on it. 
+
+Basic usage is:
+
+    hostapd-wpe hostapd-wpe.conf 
+
+Credentials will be displayed on the screen and stored in hostapd-wpe.log
+
+Additional WPE command line options are:
+
+    -s  Return EAP-Success messages after credentials are harvested
+    -k  Gratuitous probe responses (Karma mode) 
+    -c  Attempt to exploit CVE-2014-0160 (Cupid mode)
 
 Building 
 ---------
 
-    hostapd does not support EAP-FAST out of the box. Instead you'll have 
-    to install a OpenSSL version > 1.0.0 and apply the hostapd-wpe patch
-    to make it all work. 
-
-    hostapd-wpe is assumed to be in /root/hostapd-wpe if you put it 
-    anywhere else, you'll need to change the config files, etc..
-
     git clone https://github.com/OpenSecurityResearch/hostapd-wpe 
 
-    BT5R2 Building - Here are the build steps for OpenSSL (on BT5R2):
-    ------------------------------------------------------------------------
-        Note: This will overwrite any previous OpenSSL instances and may
-        break things.. 
-
-        wget https://www.openssl.org/source/openssl-1.0.1c.tar.gz
-        tar -zxf openssl-1.0.1c.tar.gz
-        cd openssl-1.0.1c
-        ./config --prefix=/usr --libdir=lib no-idea shared zlib enable-tlsext enable-rc5 enable-ssl2 enable-ssl3 enable-tls1
-        make depend
-        make
-        make install
-
-
-    Kali 1.0.2 Building - 
+    Ubuntu/Debian/Kali Building - 
     -----------------------------------------------------------------------
-        Kali Linux comes with openssl 1.0.1e which satisfies our requirements
-        you just need to update some packages:
-
         apt-get update
         apt-get install libssl-dev libnl-dev
+        
 
     General - 
     ------------------------------------------------------------------------
     	Now apply the hostapd-wpe.patch:
+        
+        git clone https://github.com/OpenSecurityResearch/hostapd-wpe
 
-        wget http://hostap.epitest.fi/releases/hostapd-1.1.tar.gz
-        tar -zxf hostapd-1.1.tar.gz
-        cd hostapd-1.1
-        patch -p1 < /root/hostapd-wpe/hostapd-wpe.patch 
+        wget http://hostap.epitest.fi/releases/hostapd-2.2.tar.gz
+        tar -zxf hostapd-2.2.tar.gz
+        cd hostapd-2.2
+        patch -p1 < ../hostapd-wpe/hostapd-wpe.patch 
         cd hostapd
         make
-        make install
 
         I copied the certs directory and scripts from FreeRADIUS to ease that 
         portion of things. You should just be able to:
 
-        cd /root/hostapd-wpe/certs
+        cd ../hostapd-wpe/certs
         ./bootstrap
+
+        then finally just:
+        
+        cd ../hostapd-2.2/hostapd
+        sudo ./hostapd-wpe hostapd-wpe.conf
 
 
 Running:
 ----------------
 
-    With all of that complete, you can run hostapd. When testing, use either
-    hostapd-local-eapfast.conf or hostapd-local-peap.conf which will
-    create an AP and output the credentials. For instance:
+    With all of that complete, you can run hostapd. The patch will
+    create a new hostapd-wpe.conf, which you'll likely need to modify
+    in order to make it work for your attack. Once ready just run
 
-    hostapd -d ~/hostapd-wpe/hostapd-local-eapfast.conf
+    hostapd hostapd-wpe.conf
 
     Look in the output for the username/challenge/response. I'll add
     file logging soon. You can also use -K to get additional information
@@ -102,3 +127,4 @@ Running:
     NT hash:           e614b958df9df49ec094b8730f0bb1ca
     password:          bradtest
 
+    Alternatively MSCHAPv2 credentials are outputted in john the rippers NETNTLM format. 
