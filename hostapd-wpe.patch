@@ -2250,7 +2250,7 @@ diff -rupN hostapd-2.2/hostapd/hostapd-wpe.eap_user hostapd-2.2-wpe/hostapd/host
 +#
 +# WPE - DO NOT REMOVE - These entries are specifically in here 
 +*		PEAP,TTLS,TLS,FAST
-+"t"	    TTLS-PAP,MD5,GTC,TTLS-CHAP,TTLS-MSCHAP,PEAP,TTLS,TTLS-MSCHAPV2,MSCHAPV2	"t"	[2]
++"t"	    TTLS-PAP,TTLS-CHAP,TTLS-MSCHAP,MSCHAPV2,MD5,GTC,TTLS,TTLS-MSCHAPV2  "t"	[2]
 +#   Not valid: PEAP-GTC, PEAP-MD5, TTLS-OTP, TTLS-GTC
 +# Default to EAP-SIM and EAP-AKA based on fixed identity prefixes in phase 2
 +#"0"*		AKA	[2]
