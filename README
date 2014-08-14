@@ -87,12 +87,12 @@ Building
         I copied the certs directory and scripts from FreeRADIUS to ease that 
         portion of things. You should just be able to:
 
-        cd ../hostapd-wpe/certs
+        cd ../../hostapd-wpe/certs
         ./bootstrap
 
         then finally just:
         
-        cd ../hostapd-2.2/hostapd
+        cd ../../hostapd-2.2/hostapd
         sudo ./hostapd-wpe hostapd-wpe.conf
 
 

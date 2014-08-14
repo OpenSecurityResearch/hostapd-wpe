@@ -1,6 +1,6 @@
 diff -rupN hostapd-2.2/hostapd/.config hostapd-2.2-wpe/hostapd/.config
 --- hostapd-2.2/hostapd/.config	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/hostapd/.config	2014-07-26 15:19:18.415749622 -0400
++++ hostapd-2.2-wpe/hostapd/.config	2014-08-14 08:25:43.245171276 -0400
 @@ -0,0 +1,317 @@
 +# Example hostapd build time configuration
 +#
@@ -321,7 +321,7 @@ diff -rupN hostapd-2.2/hostapd/.config hostapd-2.2-wpe/hostapd/.config
 +#CONFIG_ACS=y
 diff -rupN hostapd-2.2/hostapd/config_file.c hostapd-2.2-wpe/hostapd/config_file.c
 --- hostapd-2.2/hostapd/config_file.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/hostapd/config_file.c	2014-07-26 15:19:18.415749622 -0400
++++ hostapd-2.2-wpe/hostapd/config_file.c	2014-08-14 08:25:43.245171276 -0400
 @@ -20,7 +20,7 @@
  #include "ap/wpa_auth.h"
  #include "ap/ap_config.h"
@@ -354,7 +354,7 @@ diff -rupN hostapd-2.2/hostapd/config_file.c hostapd-2.2-wpe/hostapd/config_file
  		bss->eap_server = atoi(pos);
 diff -rupN hostapd-2.2/hostapd/hostapd-wpe.conf hostapd-2.2-wpe/hostapd/hostapd-wpe.conf
 --- hostapd-2.2/hostapd/hostapd-wpe.conf	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/hostapd/hostapd-wpe.conf	2014-07-26 15:19:18.419749747 -0400
++++ hostapd-2.2-wpe/hostapd/hostapd-wpe.conf	2014-08-14 08:25:43.249171275 -0400
 @@ -0,0 +1,1812 @@
 +#
 +# hostapd-wpe.conf
@@ -2170,7 +2170,7 @@ diff -rupN hostapd-2.2/hostapd/hostapd-wpe.conf hostapd-2.2-wpe/hostapd/hostapd-
 +# ...
 diff -rupN hostapd-2.2/hostapd/hostapd-wpe.eap_user hostapd-2.2-wpe/hostapd/hostapd-wpe.eap_user
 --- hostapd-2.2/hostapd/hostapd-wpe.eap_user	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/hostapd/hostapd-wpe.eap_user	2014-07-26 15:19:18.419749747 -0400
++++ hostapd-2.2-wpe/hostapd/hostapd-wpe.eap_user	2014-08-14 08:28:21.057165006 -0400
 @@ -0,0 +1,87 @@
 +# hostapd user database for integrated EAP server
 +
@@ -2250,7 +2250,7 @@ diff -rupN hostapd-2.2/hostapd/hostapd-wpe.eap_user hostapd-2.2-wpe/hostapd/host
 +#
 +# WPE - DO NOT REMOVE - These entries are specifically in here 
 +*		PEAP,TTLS,TLS,FAST
-+"t"	    PEAP,TTLS,TTLS-CHAP,TTLS-MSCHAP,TTLS-MSCHAPV2,TTLS-PAP,MSCHAPV2,MD5,GTC	"t"	[2]
++"t"	    TTLS-PAP,MD5,GTC,TTLS-CHAP,TTLS-MSCHAP,PEAP,TTLS,TTLS-MSCHAPV2,MSCHAPV2	"t"	[2]
 +#   Not valid: PEAP-GTC, PEAP-MD5, TTLS-OTP, TTLS-GTC
 +# Default to EAP-SIM and EAP-AKA based on fixed identity prefixes in phase 2
 +#"0"*		AKA	[2]
@@ -2261,7 +2261,7 @@ diff -rupN hostapd-2.2/hostapd/hostapd-wpe.eap_user hostapd-2.2-wpe/hostapd/host
 +#"5"*		SIM	[2]
 diff -rupN hostapd-2.2/hostapd/main.c hostapd-2.2-wpe/hostapd/main.c
 --- hostapd-2.2/hostapd/main.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/hostapd/main.c	2014-07-26 15:19:18.419749747 -0400
++++ hostapd-2.2-wpe/hostapd/main.c	2014-08-14 08:25:43.249171275 -0400
 @@ -27,7 +27,7 @@
  #include "config_file.h"
  #include "eap_register.h"
@@ -2341,7 +2341,7 @@ diff -rupN hostapd-2.2/hostapd/main.c hostapd-2.2-wpe/hostapd/main.c
  			break;
 diff -rupN hostapd-2.2/hostapd/Makefile hostapd-2.2-wpe/hostapd/Makefile
 --- hostapd-2.2/hostapd/Makefile	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/hostapd/Makefile	2014-07-26 15:19:18.423749972 -0400
++++ hostapd-2.2-wpe/hostapd/Makefile	2014-08-14 08:25:43.249171275 -0400
 @@ -59,6 +59,7 @@ OBJS += ../src/ap/preauth_auth.o
  OBJS += ../src/ap/pmksa_cache_auth.o
  OBJS += ../src/ap/ieee802_11_shared.o
@@ -2390,7 +2390,7 @@ diff -rupN hostapd-2.2/hostapd/Makefile hostapd-2.2-wpe/hostapd/Makefile
  	rm -rf lcov-html
 diff -rupN hostapd-2.2/src/ap/beacon.c hostapd-2.2-wpe/src/ap/beacon.c
 --- hostapd-2.2/src/ap/beacon.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/ap/beacon.c	2014-07-26 15:25:00.551738718 -0400
++++ hostapd-2.2-wpe/src/ap/beacon.c	2014-08-14 08:25:43.249171275 -0400
 @@ -28,7 +28,7 @@
  #include "beacon.h"
  #include "hs20.h"
@@ -2416,7 +2416,7 @@ diff -rupN hostapd-2.2/src/ap/beacon.c hostapd-2.2-wpe/src/ap/beacon.c
  	if (res != NO_SSID_MATCH) {
 diff -rupN hostapd-2.2/src/ap/ieee802_11.c hostapd-2.2-wpe/src/ap/ieee802_11.c
 --- hostapd-2.2/src/ap/ieee802_11.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/ap/ieee802_11.c	2014-07-26 15:19:18.427750234 -0400
++++ hostapd-2.2-wpe/src/ap/ieee802_11.c	2014-08-14 08:25:43.257171274 -0400
 @@ -39,7 +39,7 @@
  #include "wnm_ap.h"
  #include "ieee802_11.h"
@@ -2439,7 +2439,7 @@ diff -rupN hostapd-2.2/src/ap/ieee802_11.c hostapd-2.2-wpe/src/ap/ieee802_11.c
  			       "Station tried to associate with unknown SSID "
 diff -rupN hostapd-2.2/src/crypto/ms_funcs.c hostapd-2.2-wpe/src/crypto/ms_funcs.c
 --- hostapd-2.2/src/crypto/ms_funcs.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/crypto/ms_funcs.c	2014-07-26 15:19:18.427750234 -0400
++++ hostapd-2.2-wpe/src/crypto/ms_funcs.c	2014-08-14 08:25:43.257171274 -0400
 @@ -78,7 +78,7 @@ static int utf8_to_ucs2(const u8 *utf8_s
   * @challenge: 8-octet Challenge (OUT)
   * Returns: 0 on success, -1 on failure
@@ -2451,7 +2451,7 @@ diff -rupN hostapd-2.2/src/crypto/ms_funcs.c hostapd-2.2-wpe/src/crypto/ms_funcs
  {
 diff -rupN hostapd-2.2/src/crypto/ms_funcs.h hostapd-2.2-wpe/src/crypto/ms_funcs.h
 --- hostapd-2.2/src/crypto/ms_funcs.h	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/crypto/ms_funcs.h	2014-07-26 15:19:18.431750483 -0400
++++ hostapd-2.2-wpe/src/crypto/ms_funcs.h	2014-08-14 08:25:43.257171274 -0400
 @@ -9,6 +9,10 @@
  #ifndef MS_FUNCS_H
  #define MS_FUNCS_H
@@ -2465,7 +2465,7 @@ diff -rupN hostapd-2.2/src/crypto/ms_funcs.h hostapd-2.2-wpe/src/crypto/ms_funcs
  			 const u8 *password, size_t password_len,
 diff -rupN hostapd-2.2/src/crypto/tls_openssl.c hostapd-2.2-wpe/src/crypto/tls_openssl.c
 --- hostapd-2.2/src/crypto/tls_openssl.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/crypto/tls_openssl.c	2014-07-26 15:28:37.435731190 -0400
++++ hostapd-2.2-wpe/src/crypto/tls_openssl.c	2014-08-14 08:25:43.257171274 -0400
 @@ -20,6 +20,7 @@
  #include <openssl/err.h>
  #include <openssl/pkcs12.h>
@@ -2630,7 +2630,7 @@ diff -rupN hostapd-2.2/src/crypto/tls_openssl.c hostapd-2.2-wpe/src/crypto/tls_o
 +
 diff -rupN hostapd-2.2/src/eap_server/eap_server.c hostapd-2.2-wpe/src/eap_server/eap_server.c
 --- hostapd-2.2/src/eap_server/eap_server.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/eap_server/eap_server.c	2014-07-26 15:19:18.435750609 -0400
++++ hostapd-2.2-wpe/src/eap_server/eap_server.c	2014-08-14 08:25:43.257171274 -0400
 @@ -22,7 +22,8 @@
  #define STATE_MACHINE_DATA struct eap_sm
  #define STATE_MACHINE_DEBUG_PREFIX "EAP"
@@ -2664,7 +2664,7 @@ diff -rupN hostapd-2.2/src/eap_server/eap_server.c hostapd-2.2-wpe/src/eap_serve
  		eap_user_free(user);
 diff -rupN hostapd-2.2/src/eap_server/eap_server_mschapv2.c hostapd-2.2-wpe/src/eap_server/eap_server_mschapv2.c
 --- hostapd-2.2/src/eap_server/eap_server_mschapv2.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/eap_server/eap_server_mschapv2.c	2014-07-26 15:19:18.435750609 -0400
++++ hostapd-2.2-wpe/src/eap_server/eap_server_mschapv2.c	2014-08-14 08:25:43.261171275 -0400
 @@ -12,7 +12,7 @@
  #include "crypto/ms_funcs.h"
  #include "crypto/random.h"
@@ -2715,7 +2715,7 @@ diff -rupN hostapd-2.2/src/eap_server/eap_server_mschapv2.c hostapd-2.2-wpe/src/
  
 diff -rupN hostapd-2.2/src/eap_server/eap_server_peap.c hostapd-2.2-wpe/src/eap_server/eap_server_peap.c
 --- hostapd-2.2/src/eap_server/eap_server_peap.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/eap_server/eap_server_peap.c	2014-07-26 15:19:18.443751022 -0400
++++ hostapd-2.2-wpe/src/eap_server/eap_server_peap.c	2014-08-14 08:25:43.261171275 -0400
 @@ -17,7 +17,7 @@
  #include "eap_common/eap_tlv_common.h"
  #include "eap_common/eap_peap_common.h"
@@ -2757,7 +2757,7 @@ diff -rupN hostapd-2.2/src/eap_server/eap_server_peap.c hostapd-2.2-wpe/src/eap_
  
 diff -rupN hostapd-2.2/src/eap_server/eap_server_ttls.c hostapd-2.2-wpe/src/eap_server/eap_server_ttls.c
 --- hostapd-2.2/src/eap_server/eap_server_ttls.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/eap_server/eap_server_ttls.c	2014-07-26 15:19:18.447751093 -0400
++++ hostapd-2.2-wpe/src/eap_server/eap_server_ttls.c	2014-08-14 08:25:43.261171275 -0400
 @@ -16,7 +16,7 @@
  #include "eap_server/eap_tls_common.h"
  #include "eap_common/chap.h"
@@ -2830,7 +2830,7 @@ diff -rupN hostapd-2.2/src/eap_server/eap_server_ttls.c hostapd-2.2-wpe/src/eap_
  			   "NT-Response");
 diff -rupN hostapd-2.2/src/Makefile hostapd-2.2-wpe/src/Makefile
 --- hostapd-2.2/src/Makefile	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/Makefile	2014-07-26 15:19:18.447751093 -0400
++++ hostapd-2.2-wpe/src/Makefile	2014-08-14 08:25:43.261171275 -0400
 @@ -1,4 +1,4 @@
 -SUBDIRS=ap common crypto drivers eapol_auth eapol_supp eap_common eap_peer eap_server l2_packet p2p pae radius rsn_supp tls utils wps
 +SUBDIRS=ap common crypto drivers eapol_auth eapol_supp eap_common eap_peer eap_server l2_packet p2p pae radius rsn_supp tls utils wps wpe
@@ -2839,7 +2839,7 @@ diff -rupN hostapd-2.2/src/Makefile hostapd-2.2-wpe/src/Makefile
  	for d in $(SUBDIRS); do [ -d $$d ] && $(MAKE) -C $$d; done
 diff -rupN hostapd-2.2/src/utils/wpa_debug.c hostapd-2.2-wpe/src/utils/wpa_debug.c
 --- hostapd-2.2/src/utils/wpa_debug.c	2014-06-04 09:26:14.000000000 -0400
-+++ hostapd-2.2-wpe/src/utils/wpa_debug.c	2014-07-26 15:19:18.447751093 -0400
++++ hostapd-2.2-wpe/src/utils/wpa_debug.c	2014-08-14 08:25:43.265171275 -0400
 @@ -30,7 +30,7 @@ static FILE *wpa_debug_tracing_file = NU
  
  
@@ -2851,7 +2851,7 @@ diff -rupN hostapd-2.2/src/utils/wpa_debug.c hostapd-2.2-wpe/src/utils/wpa_debug
  
 diff -rupN hostapd-2.2/src/wpe/Makefile hostapd-2.2-wpe/src/wpe/Makefile
 --- hostapd-2.2/src/wpe/Makefile	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/src/wpe/Makefile	2014-07-26 15:19:18.451751075 -0400
++++ hostapd-2.2-wpe/src/wpe/Makefile	2014-08-14 08:25:43.265171275 -0400
 @@ -0,0 +1,8 @@
 +all:
 +	@echo Nothing to be made.
@@ -2863,8 +2863,8 @@ diff -rupN hostapd-2.2/src/wpe/Makefile hostapd-2.2-wpe/src/wpe/Makefile
 +	@echo Nothing to be made.
 diff -rupN hostapd-2.2/src/wpe/wpe.c hostapd-2.2-wpe/src/wpe/wpe.c
 --- hostapd-2.2/src/wpe/wpe.c	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/src/wpe/wpe.c	2014-07-26 15:19:18.451751075 -0400
-@@ -0,0 +1,208 @@
++++ hostapd-2.2-wpe/src/wpe/wpe.c	2014-08-14 08:29:37.133162948 -0400
+@@ -0,0 +1,209 @@
 +/*
 +    wpe.c - 
 +        brad.antoniewicz@foundstone.com
@@ -2923,11 +2923,12 @@ diff -rupN hostapd-2.2/src/wpe/wpe.c hostapd-2.2-wpe/src/wpe/wpe.c
 +    va_list ap;
 +
 +    va_start(ap, fmt);
-+
 +    vprintf(fmt, ap);
++    va_end(ap);
++
++    va_start(ap, fmt);
 +    if ( wpe_conf.wpe_logfile_fp != NULL )
 +        vfprintf(wpe_conf.wpe_logfile_fp, fmt, ap);
-+
 +    va_end(ap);
 +}
 +
@@ -3075,7 +3076,7 @@ diff -rupN hostapd-2.2/src/wpe/wpe.c hostapd-2.2-wpe/src/wpe/wpe.c
 +
 diff -rupN hostapd-2.2/src/wpe/wpe.h hostapd-2.2-wpe/src/wpe/wpe.h
 --- hostapd-2.2/src/wpe/wpe.h	1969-12-31 19:00:00.000000000 -0500
-+++ hostapd-2.2-wpe/src/wpe/wpe.h	2014-07-26 15:19:18.451751075 -0400
++++ hostapd-2.2-wpe/src/wpe/wpe.h	2014-08-14 08:25:43.265171275 -0400
 @@ -0,0 +1,50 @@
 +/*
 +    wpe.h - 
