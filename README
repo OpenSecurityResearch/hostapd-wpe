@@ -3,7 +3,7 @@ brad.antoniewicz@foundstone.com
 twitter: @brad_anton
 ------------------------------------------
 
-The current hostapd-wpe.patch is for: hostapd-2.2.tar.gz
+The current hostapd-wpe.patch is for: hostapd-2.5.tar.gz
 
 About
 ----------
@@ -77,9 +77,9 @@ Building
         
         git clone https://github.com/OpenSecurityResearch/hostapd-wpe
 
-        wget http://hostap.epitest.fi/releases/hostapd-2.2.tar.gz
-        tar -zxf hostapd-2.2.tar.gz
-        cd hostapd-2.2
+        wget http://hostap.epitest.fi/releases/hostapd-2.5.tar.gz
+        tar -zxf hostapd-2.5.tar.gz
+        cd hostapd-2.5
         patch -p1 < ../hostapd-wpe/hostapd-wpe.patch 
         cd hostapd
         make
@@ -92,7 +92,7 @@ Building
 
         then finally just:
         
-        cd ../../hostapd-2.2/hostapd
+        cd ../../hostapd-2.5/hostapd
         sudo ./hostapd-wpe hostapd-wpe.conf
 
 
