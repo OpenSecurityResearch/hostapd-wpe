@@ -73,6 +73,9 @@ Building
         if you're using Kali 2.0 install:
         $ apt-get install libssl-dev libnl-genl-3-dev
         
+    Arch Building - 
+    -----------------------------------------------------------------------
+        $ pacman -S openssl-1.0        
 
     General - 
     ------------------------------------------------------------------------
@@ -88,6 +91,9 @@ Building
         
         If you're using Kali 2.0 edit .config file and uncomment:
         CONFIG_LIBNL32=y
+        
+        If you are using Arch, use this insread:
+        $ CFLAGS=' -MMD -O2 -Wall -g -I/usr/include/openssl-1.0 ' LDFLAGS=' -L/usr/lib/openssl-1.0 ' make
         
         $ make
 
